@@ -570,6 +570,17 @@ def git_update(repo, is_no_errors=False, is_current_dir=False, git_owner=""):
   os.chdir(old_cur)
   return
 
+def git_patch(repo):
+  print("[git] patch: " + repo)
+  patch_folder = get_script_dir() + "/../patch/" + repo
+  repo_folder = get_script_dir() + "/../../" + repo
+  os.chdir(repo_folder)
+  for path, directories, patchs in os.walk(patch_folder):
+    for patch in patchs:
+      print("[git] Apply patch: " + os.path.join(path, patch))
+      cmd("git", ["apply", os.path.join(path, patch)], True)
+  os.chdir(get_script_dir() + "/../")
+
 def get_repositories():
   result = {}
   result["core"] = [False, False]
@@ -651,6 +662,7 @@ def update_repositories(repositories):
     current_dir = value[1]
     if current_dir == False:
       git_update(repo, value[0], False)
+      git_patch(repo)
     else:
       if is_dir(current_dir + "/.git"):
         delete_dir_with_access_error(current_dir);
@@ -660,6 +672,7 @@ def update_repositories(repositories):
       cur_dir = os.getcwd()
       os.chdir(current_dir)
       git_update(repo, value[0], True)
+      git_patch(repo)
       os.chdir(cur_dir)
 
 def git_dir():
