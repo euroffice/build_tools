@@ -624,8 +624,9 @@ def git_update(repo, is_no_errors=False, is_current_dir=False, git_owner=""):
     retCheckout = cmd("git", ["checkout", "-f", config.option("branch")], True)
     if (retCheckout != 0):
       print("branch does not exist...")
-      print("switching to master...")
-      cmd("git", ["checkout", "-f", "master"])
+  print("switching to main/master...")
+  retMain = cmd("git", ["checkout", "-f", "main"], True)
+  if retMain != 0:
     cmd("git", ["submodule", "update", "--init", "--recursive"], True)
   if (0 != config.option("branch").find("tags/")):
     cmd("git", ["pull"], False if ("1" != config.option("update-light")) else True)
